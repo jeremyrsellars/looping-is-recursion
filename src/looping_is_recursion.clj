@@ -61,5 +61,13 @@
      0 1 2)))
 
 (defn cut-at-repetition [a-seq]
-  [":("])
-
+  (->>
+    ((fn [accum used items]
+      (if (empty? items)
+        accum
+        (let [[item & remaining-items] items]
+          (if (contains? used item)
+            accum
+            (recur (cons item accum) (conj used item) remaining-items)))))
+     [] #{} a-seq)
+   reverse))
